@@ -42,8 +42,8 @@ class DashboardViewModelTest {
     @Test
     fun `fetchDashboard success returns list of entities`() = runTest {
         val sampleEntities = listOf(
-            Entity(property1 = "Item 1", property2 = "Type A", description = "Test Desc 1"),
-            Entity(property1 = "Item 2", property2 = "Type B", description = "Test Desc 2")
+            Entity(species = "Item 1", scientificName = "Type A", description = "Test Desc 1"),
+            Entity(species = "Item 2", scientificName = "Type B", description = "Test Desc 2")
         )
         val dashboardResponse = DashboardResponse(entities = sampleEntities, entityTotal = 2)
 
@@ -55,6 +55,36 @@ class DashboardViewModelTest {
         val result = viewModel.entities.value
         assertTrue(result?.isSuccess == true)
         assertEquals(2, result?.getOrNull()?.size)
-        assertEquals("Item 1", result?.getOrNull()?.get(0)?.property1)
+        assertEquals("Item 1", result?.getOrNull()?.get(0)?.species)
+    }
+
+    @Test
+    fun `fetchDashboard with error response updates entities with failure`() = runTest {
+        val errorResponse = Response.error<DashboardResponse>(
+            404,
+            okhttp3.ResponseBody.create(null, "")
+        )
+
+        `when`(repository.getDashboard("BADKEY")).thenReturn(errorResponse)
+
+        viewModel.fetchDashboard("BADKEY")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val result = viewModel.entities.value
+        assertTrue(result?.isFailure == true)
+        assertEquals("Failed to fetch dashboard (404)", result?.exceptionOrNull()?.message)
+    }
+
+    @Test
+    fun `fetchDashboard with network exception updates entities with failure`() = runTest {
+        `when`(repository.getDashboard("KEY123456"))
+            .thenThrow(RuntimeException("timeout"))
+
+        viewModel.fetchDashboard("KEY123456")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val result = viewModel.entities.value
+        assertTrue(result?.isFailure == true)
+        assertTrue(result?.exceptionOrNull()?.message?.contains("Network error") == true)
     }
 }

@@ -15,6 +15,14 @@ An Android application built for NIT3213 demonstrating MVVM architecture, Depend
 - **UI Components**: ViewBinding, RecyclerView, CardView
 - **Testing**: JUnit4, Mockito, Kotlinx Coroutines Test, InstantTaskExecutorRule
 
+## Dependencies
+All dependencies are declared in `app/build.gradle.kts` and resolved automatically on Gradle sync. Key libraries:
+- **Hilt** (`com.google.dagger:hilt-android`) — dependency injection; requires the `kotlin-kapt` and `com.google.dagger.hilt.android` plugins, both already configured in the Gradle files.
+- **Retrofit 2 + Gson Converter** — network calls and JSON deserialization.
+- **OkHttp Logging Interceptor** — logs raw request/response bodies for debugging.
+- **JUnit4, Mockito, Kotlinx Coroutines Test** — unit testing. 
+- No manual dependency installation is required — running Gradle sync (step 4 below) downloads everything.
+
 ## How to Build & Run
 1. Open Android Studio.
 2. Select **File > Open** and select the project root directory.
@@ -26,3 +34,14 @@ An Android application built for NIT3213 demonstrating MVVM architecture, Depend
 ## API Endpoints Used
 - `POST https://nit3213apinew.onrender.com/footscray/auth`
 - `GET https://nit3213apinew.onrender.com/dashboard/{keypass}`
+
+## Requirements & Notes
+- **Internet connection required**: The app authenticates against a live external API hosted on Render, so the emulator or device must have network access. The `INTERNET` permission is already declared in `AndroidManifest.xml`.
+- **Login credentials**: Use your student ID (without the leading "s") as the username and your first name (case-sensitive) as the password, per the NIT3213 assignment specification.
+- **Class location**: This build targets the `/footscray/` endpoint. Students in other locations would change the endpoint path in `ApiService.kt`.
+
+## Running Unit Tests
+Run all tests via: **right-click the `com.example.s8128638assignment2` test package > Run Tests**, or from the terminal:
+```
+./gradlew testDebugUnitTest
+```

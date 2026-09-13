@@ -62,4 +62,34 @@ class AuthViewModelTest {
         assertTrue(result?.isSuccess == true)
         assertEquals("KEY123456", result?.getOrNull())
     }
+
+    @Test
+    fun `login with invalid credentials updates loginResult with failure`() = runTest {
+        val errorResponse = Response.error<AuthResponse>(
+            401,
+            okhttp3.ResponseBody.create(null, "")
+        )
+
+        `when`(repository.login(AuthRequest("wrong", "wrong"))).thenReturn(errorResponse)
+
+        viewModel.login("wrong", "wrong")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val result = viewModel.loginResult.value
+        assertTrue(result?.isFailure == true)
+        assertEquals("Invalid credentials (401)", result?.exceptionOrNull()?.message)
+    }
+
+    @Test
+    fun `login with network exception updates loginResult with failure`() = runTest {
+        `when`(repository.login(AuthRequest("student", "password123")))
+            .thenThrow(RuntimeException("timeout"))
+
+        viewModel.login("student", "password123")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        val result = viewModel.loginResult.value
+        assertTrue(result?.isFailure == true)
+        assertTrue(result?.exceptionOrNull()?.message?.contains("Network error") == true)
+    }
 }
