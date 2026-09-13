@@ -12,8 +12,12 @@ data class AuthResponse(
 )
 
 data class Entity(
-    val property1: String? = null,
-    val property2: String? = null,
+    val species: String? = null,
+    val scientificName: String? = null,
+    val habitat: String? = null,
+    val diet: String? = null,
+    val conservationStatus: String? = null,
+    val averageLifespan: Int? = null,
     val description: String? = null
 ) : Serializable
 

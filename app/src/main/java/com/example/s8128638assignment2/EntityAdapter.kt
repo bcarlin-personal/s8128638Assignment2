@@ -14,8 +14,8 @@ class EntityAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(entity: Entity) {
-            binding.tvProperty1.text = entity.property1 ?: "N/A"
-            binding.tvProperty2.text = entity.property2 ?: "N/A"
+            binding.tvProperty1.text = entity.species ?: "N/A"
+            binding.tvProperty2.text = entity.scientificName ?: "N/A"
 
             binding.root.setOnClickListener {
                 onItemClick(entity)

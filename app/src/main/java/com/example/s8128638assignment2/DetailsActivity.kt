@@ -22,8 +22,12 @@ class DetailsActivity : AppCompatActivity() {
         }
 
         entity?.let {
-            binding.tvDetailProperty1.text = it.property1 ?: "N/A"
-            binding.tvDetailProperty2.text = it.property2 ?: "N/A"
+            binding.tvDetailSpecies.text = it.species ?: "N/A"
+            binding.tvDetailScientificName.text = it.scientificName ?: "N/A"
+            binding.tvDetailHabitat.text = "Habitat: ${it.habitat ?: "N/A"}"
+            binding.tvDetailDiet.text = "Diet: ${it.diet ?: "N/A"}"
+            binding.tvDetailConservation.text = "Conservation Status: ${it.conservationStatus ?: "N/A"}"
+            binding.tvDetailLifespan.text = "Average Lifespan: ${it.averageLifespan?.toString() ?: "N/A"} years"
             binding.tvDetailDescription.text = it.description ?: "No detailed description available."
         }
     }
